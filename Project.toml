@@ -1,0 +1,13 @@
+name = "bin2nc"
+uuid = "a10d1994-1e2f-405a-b707-1ec101dd1b4b"
+authors = ["biskwikman <djosephhenri@gmail.com> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.6.7"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
