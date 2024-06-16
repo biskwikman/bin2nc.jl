@@ -3,6 +3,9 @@ uuid = "a10d1994-1e2f-405a-b707-1ec101dd1b4b"
 authors = ["biskwikman <djosephhenri@gmail.com> and contributors"]
 version = "1.0.0-DEV"
 
+[deps]
+NetCDF = "30363a11-5582-574a-97bb-aa9a979735b9"
+
 [compat]
 julia = "1.6.7"
 
