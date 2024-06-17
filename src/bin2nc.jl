@@ -1,7 +1,7 @@
 module bin2nc
 
 using NetCDF
-using CairoMakie
+# using CairoMakie
 
 function main()
 
@@ -9,7 +9,9 @@ function main()
 
     bin_files = get_bin_files(directory)
 
-    bin_array = read_bin_files(bin_files)
+    (bin_array, years) = read_bin_files(bin_files)
+
+    convert_to_nc(bin_array, years)
 
 end
 
@@ -25,7 +27,9 @@ end
 
 function read_bin_files(bin_files::Vector)
 
-    var_array = Array{Union{Float32, Missing}, 3}(missing, 1440, 720, 12*length(bin_files))
+    years = length(bin_files)
+
+    var_array = Array{Union{Float32, Missing}, 3}(missing, 1440, 720, 12*years)
 
     for (i, file) in enumerate(bin_files)
         year_array = Array{Float32, 3}(undef, 1440, 720, 12)
@@ -34,14 +38,24 @@ function read_bin_files(bin_files::Vector)
     end
 
     replace!(var_array, -9999.0 => missing)
-    reverse!(var_array; dims=2)
+    (reverse!(var_array; dims=2), years)
 
 end
 
-function convert_to_nc(bin_array) {
-        lat = collect(-89.875, 89.875)
-        lon = collect(-179.875, 179.875)
-    }
+function convert_to_nc(bin_array, years) 
+        lat = collect(-89.875:89.875)
+        lon = collect(-179.875:179.875)
+        tim = collect(0:12*years-1)
+
+        varatts = Dict("longname" => "Gross Primary Product", "units" => "gC/m^2/day")
+        lonatts = Dict("longname" => "Longitude", "units" => "degrees east")
+        latatts = Dict("longname" => "Latitude", "units" => "degrees north")
+        timatts = Dict("longname" => "Time", "units" => "months since 2000-01-01 00:00:00")
+
+        nccreate("zzz.nc", "gpp", "lon", lon, lonatts, "lat", lat, latatts, "time", tim, timatts, atts=varatts)
+
+        ncwrite(bin_array, "zzz.nc", "gpp")
+end
 
 # main()
 
